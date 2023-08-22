@@ -16,7 +16,7 @@ export default class IHCProjectGroup extends Component {
         null}
 
       <div class="row row-cols-1 row-cols-md-2 g-4">
-        ${this.props.functions.map(f => html`<div class="col"><${IHCProjectFunction} ...${f}/></div>`)}
+        // ${this.props.functions.map(f => html`<div class="col"><${IHCProjectFunction} ...${f}/></div>`)}
         ${this.props.datalineProducts.map(p => html`<div class="col"><${IHCProjectDatalineProduct} ...${p}/></div>`)}
         ${this.props.airlinkProducts.map(p => html`<div class="col"><${IHCProjectAirlinkProduct} ...${p}/></div>`)}
       </div>
