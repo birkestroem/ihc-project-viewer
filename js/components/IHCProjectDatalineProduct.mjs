@@ -57,7 +57,7 @@ export default class IHCProjectDatalineProduct extends Component {
           ${this.props.locked ? html`<span class="badge text-bg-secondary">locked</span>` : ''}
         </div>
         <h5 class="card-title">
-          <i class="bi-toggles"></i> ${this.props.name}
+          <i class="bi-plug"></i> ${this.props.name}
         </h5>
 
         ${this.props.position && this.props.position.trim().length > 0 ?
