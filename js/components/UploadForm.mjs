@@ -91,7 +91,81 @@ export default class UploadForm extends Component {
   }
 
   parseProductAirlinkXML = (xml) => {
-    const obj = {};
+    const obj = {
+      id: this.translateIhcId(xml.getAttribute('id')),
+      productIdentifier: this.translateIhcId(xml.getAttribute('product_identifier')),
+      deviceType: this.translateIhcId(xml.getAttribute('device_type')),
+      serialnumber: this.translateIhcId(xml.getAttribute('serialnumber')),
+      name: xml.getAttribute('name'),
+      locked: xml.getAttribute('locked') === 'yes',
+      icon: this.translateIhcId(xml.getAttribute('icon')),
+      position: xml.getAttribute('position'),
+      inputs: [],
+      relays: [],
+      scenes: [],
+      settings: [],
+    };
+
+    //console.log(xml);
+    // <product_airlink id="_0x661854" product_identifier="_0x4304" device_type="_0x808" name="Lampeudtag dimmer" serialnumber="_0x640821060242" locked="yes" position="Sengelampe Jesper" icon="_0x86" enduser_report="no" note="" helpfile="" documentation_tag="" power_group="" udf="">
+    //   <airlink_dimmer_increase id="_0x66195f" name="Tænd / regulér op" address_channel="_0x1" note="" udf=""/>
+    //   <airlink_dimmer_decrease id="_0x661a60" name="Sluk / regulér ned" address_channel="_0x1" note="" udf=""/>
+    //   <airlink_dimming id="_0x661b5d" name="Lys niveau" address_channel="_0x1" note="" udf=""/>
+    //   <light_indication id="_0x661c1d" name="Lys indikering" note="'On' når lysdæmperen er tændt" note-2="" udf="">
+    //       <link_from_resource id="_0x71ff2d" name="Følg Link" icon="_0x47" link="_0x72002c" note="" udf=""/>
+    //   </light_indication>
+    //   <scenes id="_0x661d49" name="Scenarier/regulering" scene_resource="_0x661b5d" note="" udf="">
+    //       <scene_dimmer id="_0x6a5b4c" name="Scenarie link" dimming_value="35" ramptime_ms="1000" link="_0x6a5c4b" delay_ms="0" note="" udf=""/>
+    //       <scene_dimmer id="_0x6a5d4c" name="Scenarie link" dimming_value="15" ramptime_ms="1000" link="_0x6a5e4b" delay_ms="0" note="" udf=""/>
+    //       <scene_dimmer id="_0x83274c" name="Scenarie link" dimming_value="100" ramptime_ms="1000" link="_0x83284b" delay_ms="0" note="" udf=""/>
+    //   </scenes>
+    //   <dimmer_settings id="_0x661e6e" name="" icon="_0x0" note="" udf="">
+    //       <dimmer_setting_minimum_value id="_0x661f71" value="22" maximum="100" minimum="0" udf=""/>
+    //       <dimmer_setting_maximum_value id="_0x662072" value="100" maximum="100" minimum="0" udf=""/>
+    //       <dimmer_setting_fade_rate_up id="_0x66216f" value="700" minimum="200" maximum="60000" udf=""/>
+    //       <dimmer_setting_fade_rate_down id="_0x662270" value="700" minimum="200" maximum="60000" udf=""/>
+    //       <dimmer_setting_dimming_rate id="_0x662373" value="5000" minimum="2000" maximum="10000" udf=""/>
+    //       <dimmer_setting_load_mode id="_0x662474" value="auto" udf=""/>
+    //   </dimmer_settings>
+    // </product_airlink>
+    for (const child of xml.childNodes) {
+      if (child.nodeType !== 1) {
+        continue;
+      }
+
+      switch (child.nodeName) {
+        case 'airlink_input':
+          obj.inputs.push({
+            id: this.translateIhcId(child.getAttribute('id')),
+            name: child.getAttribute('name'),
+            addressChannel: this.translateIhcId(child.getAttribute('address_channel')),
+            note: child.getAttribute('note'),
+          });
+          break;
+
+        case 'airlink_relay':
+          obj.relays.push({
+            id: this.translateIhcId(child.getAttribute('id')),
+            name: child.getAttribute('name'),
+            addressChannel: this.translateIhcId(child.getAttribute('address_channel')),
+            note: child.getAttribute('note'),
+          });
+          break;
+
+        case 'airlink_dimmer_increase':
+        case 'airlink_dimmer_decrease':
+        case 'airlink_dimming':
+        case 'light_indication':
+        case 'scenes':
+        case 'dimmer_settings':
+          // Ignore
+          break;
+
+        default:
+          throw new Error(`Unknown node name: ${child.nodeName}`);
+      }
+    }
+
     return obj;
   }
 

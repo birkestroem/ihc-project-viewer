@@ -1,3 +1,3 @@
 ```bash
-$ python -m http.server --directory .
+$ python3 -m http.server --directory .
 ```
